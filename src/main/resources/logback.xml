@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE logback>
+
+<configuration scan="true" scanPeriod="60 seconds">
+
+	<!-- Appenders -->
+	<appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSS} LEVEL=%-5p THREAD_ID=%t TXN_ID=%X{x-txid} STORE=%X{storenumber} APP_ID=%X{appid} CHANNEL=%X{channelinfo} CLASS="%class{0}" METHOD="%method{0}" %m%n</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="rollingLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${catalina.logs}/${appName}_${port.http.nonssl}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>${catalina.logs}/${appName}.${port.http.nonssl}.%i.log</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>160</maxIndex>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>64MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSS} LEVEL=%-5p THREAD_ID=%t TXN_ID=%X{txnid} APP_ID=%X{appid} CLASS="%class{0}" %m%n</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="rollingLogAsync" class="ch.qos.logback.classic.AsyncAppender">
+		<queueSize>1024</queueSize>
+		<discardingThreshold>0</discardingThreshold>
+		<includeCallerData>true</includeCallerData>
+		<!--<neverBlock>true</neverBlock>-->
+    	<appender-ref ref="rollingLog" />
+    </appender>
+  	
+	<!-- 3rdparty Loggers -->
+	<logger name="org.springframework" level="ERROR"/>
+	<logger name="org.spring.framework" level="ERROR"/>
+	<logger name="org.apache.http.impl.conn" level="ERROR" />
+	<logger name="org.I0ltec.zkclient" level="OFF" />
+	<logger name="org.apache.zookeeper" level="OFF" />
+	<logger name="org.apache.kafka" level="OFF" />
+	<logger name="kafka" level="OFF" />
+    <logger name="com.apple.hubble" level="ERROR" />
+
+
+	<!-- Application Loggers -->
+	<logger name="com.apple" level="INFO" />
+	<logger name="com.apple.retail.fcclient" level="ERROR"/>
+	<logger name="com.apple.retail.server.frameworks.nrm" level="ERROR"/>
+	<logger name="com.apple.retail.server.frameworks.nrm.configuration.DefaultCouchBaseDocumentConverter" level="OFF"/>
+	<logger name="com.apple.retail.server.frameworks.queue" level="INFO" />
+	<logger name="com.couchbase.client.core" level="INFO" />
+	<logger name="com.apple.retail.prs.isrservice" level="INFO" />
+
+	<root level="INFO">
+        <appender-ref ref="rollingLogAsync" />
+	</root>
+
+</configuration>
