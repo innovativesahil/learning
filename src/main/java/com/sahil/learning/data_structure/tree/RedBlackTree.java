@@ -7,6 +7,7 @@ package com.sahil.learning.data_structure.tree;
 // Parent and children of a red node must be black
 // Finally if we try to draw the path from any node to all its null descendants then the number of
 // black nodes must be equal for them
+// Black nodes can have black children
 
 import java.awt.*;
 
